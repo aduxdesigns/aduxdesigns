@@ -3718,9 +3718,12 @@ body.open-menu #overlay-menu {
 
 #content [data-height=fullscreen] .container,
 #content [data-masonry-init=delayed],
-#content-holder [data-height=fullscreen] .container,
+
 #content-holder [data-masonry-init=delayed] {
     min-height: 100vh
+}
+#content-holder [data-height=fullscreen] .container {
+    min-height: inherit
 }
 
 #content .content-block .cover-image,
