@@ -1,0 +1,267 @@
+/*
+Theme Name: Semplice v5
+Theme URI: https://www.semplice.com
+Author: Semplicelabs
+Author URI: https://www.semplice.com
+Description: With Semplice you can build fully responsive case studies & custom branded project pages with just a few clicks. Visit our <a href="http://help.semplice.com" target="_blank">documentation</a>, <a href="https://www.semplice.com/changelog-v5-studio" target="_blank">changelog</a> and follow us on <a href="http://www.twitter.com/semplicelabs" target="_blank">Twitter</a> for update notifications.
+Version: 5.2.4
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Tags: portfolio, responsive, case study, fullscreen cover, content editor
+Text Domain: semplice
+*/
+/*
+
+	How to add Custom CSS?
+	------------------------------------------------------------------------------------------------------------------------------------
+	Semplice is coded with SASS (http://sass-lang.com/) 
+	There are 2 ways to edit or override CSS definitions:
+	
+	# Use the Custom CSS fields in the Theme Options under 'Customize -> Advanced'
+	# Add a child theme, more info in the Documentation. http//help.semplice.com
+
+*/
+
+/* Portfolio contact footer */
+.site-contact-footer {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 32px 5%;
+  border-top: 1px solid rgba(0, 0, 0, 0.14);
+  background: #fff;
+  color: #171717;
+}
+
+.site-contact-footer__inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px 24px;
+  flex-wrap: wrap;
+}
+
+.site-contact-footer__label {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.site-contact-footer__email {
+  color: inherit;
+  font-size: 14px;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.site-contact-footer__email:hover,
+.site-contact-footer__email:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+@media (max-width: 600px) {
+  .site-contact-footer {
+    padding: 24px 20px;
+  }
+
+  .site-contact-footer__inner {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+
+/* Reference-inspired portfolio footer */
+.adux-reference-footer {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 260px;
+  padding: 48px 20px 42px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
+  color: #071b35;
+}
+
+.adux-reference-footer .adux-footer-title {
+  margin: 0 0 10px;
+  font-size: 1.45rem;
+  line-height: 1.4;
+  font-weight: 600;
+  color: #071b35;
+}
+
+.adux-reference-footer .adux-footer-email {
+  margin: 0;
+  color: #ff3d83;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  text-decoration: none;
+}
+
+.adux-reference-footer .adux-footer-email:hover {
+  text-decoration: underline;
+}
+
+.adux-reference-footer .adux-footer-social {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  margin: 30px 0 32px;
+}
+
+.adux-reference-footer .adux-footer-social a,
+.adux-reference-footer .adux-footer-icon {
+  display: inline-flex;
+  width: 22px;
+  height: 22px;
+  align-items: center;
+  justify-content: center;
+  color: #050505;
+}
+
+.adux-reference-footer .adux-footer-social svg {
+  display: block;
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
+}
+
+.adux-reference-footer .adux-footer-social .adux-footer-icon svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.adux-reference-footer .adux-footer-credit {
+  color: #78879b;
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+.adux-reference-footer .adux-footer-heart {
+  color: #ff8fb4;
+  margin-right: 5px;
+}
+
+@media (max-width: 600px) {
+  .adux-reference-footer {
+    min-height: 240px;
+    padding: 40px 16px 32px;
+  }
+
+  .adux-reference-footer .adux-footer-title {
+    font-size: 1.2rem;
+  }
+}
+
+
+/* Portfolio spacing fix: reduce oversized gaps between intro text and project imagery */
+section.content-block[data-height="fullscreen"],
+.content-block[data-height="fullscreen"] {
+  min-height: 0 !important;
+  height: auto !important;
+  padding-bottom: 1.8rem !important;
+}
+
+.content-block[data-height="fullscreen"]>.container {
+  padding-bottom: 0 !important;
+}
+
+.content-block[data-height="fullscreen"] .row {
+  margin-bottom: 0 !important;
+}
+
+@media (max-width: 767.98px) {
+
+  .content-block[data-height="fullscreen"],
+  section.content-block[data-height="fullscreen"] {
+    min-height: 0 !important;
+    height: auto !important;
+    padding-bottom: 1.2rem !important;
+  }
+}
+
+
+/* Portfolio page transitions — aligned with the home page motion */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  animation: portfolioPageEnter .65s cubic-bezier(.22, .61, .36, 1) both;
+}
+
+@keyframes portfolioPageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Consistent interactive transitions */
+a,
+button,
+.pf-carousel button,
+.semplice-navbar a,
+img,
+video,
+.content-block,
+.column,
+.is-content {
+  transition: color .25s ease, background-color .25s ease, border-color .25s ease,
+    opacity .35s ease, transform .35s ease, box-shadow .25s ease;
+}
+
+a:hover {
+  transition-duration: .2s;
+}
+
+/* Reveal content as it enters the viewport; JS adds the class only when available */
+.motion-reveal-ready .motion-reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity .7s cubic-bezier(.22, .61, .36, 1), transform .7s cubic-bezier(.22, .61, .36, 1);
+}
+
+.motion-reveal-ready .motion-reveal.motion-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  body {
+    animation: none !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .motion-reveal-ready .motion-reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
