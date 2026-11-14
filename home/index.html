@@ -294,6 +294,13 @@ box-shadow:0 22px 26px -18px rgba(35,32,74,.34);
 .vf.phone .vp::-webkit-scrollbar{display:none}
 .vf.phone video{border-radius:inherit}
 /* arrows: only on hover of the gradient stage */
+.vf{position:relative}
+.rp{appearance:none;position:absolute;right:12px;bottom:12px;z-index:3;width:34px;height:34px;display:grid;place-items:center;padding:0;border:0;border-radius:50%;color:var(--ink);cursor:pointer;opacity:0;transform:scale(.9);transition:opacity .25s,transform .25s;background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,255,255,.62));-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:inset 0 1px 1px #fff,0 4px 14px rgba(35,32,74,.18)}
+:root[data-theme="dark"] .rp{background:linear-gradient(180deg,rgba(60,58,110,.92),rgba(36,34,76,.72));color:#f4f3ff;box-shadow:inset 0 1px 1px rgba(255,255,255,.18),0 4px 14px rgba(0,0,0,.4)}
+.rp svg{width:16px;height:16px;fill:currentColor}
+.vf:hover .rp,.rp:focus-visible{opacity:1;transform:none}
+.rp:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+@media (hover:none){.rp{opacity:.85;transform:none}}
 .va{appearance:none;position:absolute;top:50%;z-index:2;width:40px;height:40px;display:grid;place-items:center;margin-top:-20px;border:0;border-radius:50%;color:var(--ink);cursor:pointer;opacity:0;pointer-events:none;transform:scale(.9);transition:opacity .3s,transform .3s;
 background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,255,255,.62));-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:inset 0 1px 1px #fff,0 4px 14px rgba(35,32,74,.18)}
 :root[data-theme="dark"] .va{background:linear-gradient(180deg,rgba(60,58,110,.92),rgba(36,34,76,.72));color:#f4f3ff;box-shadow:inset 0 1px 1px rgba(255,255,255,.18),0 4px 14px rgba(0,0,0,.4)}
@@ -367,7 +374,7 @@ background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,255,255,.62));-
 .dotc.see{opacity:0;scale:.2}
 .seep{width:0;height:0;transition:opacity .2s}
 .seep.on{opacity:1}
-.seep span{position:absolute;left:0;top:0;translate:-50% -50%;padding:11px 22px;border-radius:999px;background:linear-gradient(90deg,var(--g1),var(--g2),var(--g3),var(--g4),var(--g1));background-size:200% 100%;animation:flow 3s linear infinite;color:#fff;font-weight:500;font-size:14px;line-height:1;white-space:nowrap;box-shadow:0 8px 22px rgba(139,92,246,.35),inset 0 1px 1px rgba(255,255,255,.45);transform:scale(.85);transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+.seep span{position:absolute;left:0;top:0;translate:-50% -50%;padding:7px 14px;border-radius:999px;background:linear-gradient(90deg,var(--g1),var(--g2),var(--g3),var(--g4),var(--g1));background-size:200% 100%;animation:flow 3s linear infinite;color:#fff;font-weight:500;font-size:12px;line-height:1;white-space:nowrap;box-shadow:0 6px 16px rgba(139,92,246,.35),inset 0 1px 1px rgba(255,255,255,.45);transform:scale(.85);transition:transform .35s cubic-bezier(.2,.7,.2,1)}
 .seep.on span{transform:none}
 @media (prefers-reduced-motion:reduce){.seep span{animation:none}}
 @media (hover:hover) and (pointer:fine){html.hc,html.hc *{cursor:none!important}}
@@ -576,7 +583,7 @@ background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,255,255,.62));-
 <canvas id="dg" aria-hidden="true"></canvas>
 <canvas id="trail" aria-hidden="true"></canvas>
 <div class="dotc" id="dotc" aria-hidden="true"></div>
-<div class="seep" id="seep" aria-hidden="true"><span>see project</span></div>
+<div class="seep" id="seep" aria-hidden="true"><span>View Casestudy</span></div>
 <div class="work" id="work" tabindex="-1"></div>
 <div class="vz" id="vz" role="dialog" aria-modal="true" aria-label="All screens" aria-hidden="true"><div class="vz-bar"><span class="vz-t" id="vzt"></span><button class="cs-x" id="vzx" type="button">Close<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1.5 1.5l9 9M10.5 1.5l-9 9"/></svg></button></div><div class="vz-b" id="vzb"></div></div>
 <div class="rs" id="rs" role="dialog" aria-modal="true" aria-label="Resume" aria-hidden="true" tabindex="-1"><div class="rs-bar"><span class="esc-h" aria-hidden="true"><kbd>Esc</kbd> to close</span><a class="cs-x pri" href="Madhu_Sanisetty_Sr_UX_UI_Designer_Resume.pdf" download aria-label="Download resume as PDF"><svg class="dl" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg><span>Download PDF</span></a><button class="cs-x" id="rsx" type="button">Close<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1.5 1.5l9 9M10.5 1.5l-9 9"/></svg></button></div>
@@ -828,7 +835,7 @@ csb.addEventListener("click",e=>{
  const media=(g,k,x)=>isVid(k)
   ?`<video src="${SITE+k}" muted loop playsinline preload="metadata" aria-label="${g.label} animation ${x+1}"></video>`
   :`<img src="${PH(k)}" alt="${g.label} screen ${x+1}" loading="lazy" decoding="async" draggable="false" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src=PICSUM('${k}')">`;
- const slide=(g,k,x)=>`<figure class="vf ${g.frame}">${g.frame==="browser"?`<div class="vb" aria-hidden="true"><i></i><i></i><i></i><b></b></div>`:""}<div class="vp">${media(g,k,x)}</div></figure>`;
+ const slide=(g,k,x)=>`<figure class="vf ${g.frame}">${g.frame==="browser"?`<div class="vb" aria-hidden="true"><i></i><i></i><i></i><b></b></div>`:""}<div class="vp">${media(g,k,x)}</div>${isVid(k)?`<button class="rp" type="button" aria-label="Replay animation"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg></button>`:""}</figure>`;
  const block=g=>`<section class="case vcase" aria-label="${g.label}"><div class="info"><span class="yr">${g.label}</span><h3 class="ctitle">${g.title}</h3><p class="desc">${g.d}</p></div>`
   +`<div class="vs vg${vd.indexOf(g)}"><div class="vt${g.frame==="phone"?" ph":""}" tabindex="0" role="region" aria-label="${g.label} screens">${g.img.map((k,x)=>slide(g,k,x)).join("")}</div><i class="vm" aria-hidden="true" style="position:absolute;left:0;top:0;width:var(--vp);height:0;visibility:hidden"></i>`
   +`<button class="va p" type="button" data-d="-1" aria-label="Previous screen">${arrow("M10 3L5 8l5 5")}</button><button class="va n" type="button" data-d="1" aria-label="Next screen">${arrow("M6 3l5 5-5 5")}</button><span class="vc" aria-live="polite"></span></div></section>`;
@@ -914,6 +921,7 @@ csb.addEventListener("click",e=>{
     if(isImg){if(m.complete&&m.naturalWidth)ready();else m.addEventListener("load",ready)}
     else{if(m.readyState>=1)ready();else m.addEventListener("loadedmetadata",ready)}
    });
+   const rp=f.querySelector(".rp");if(rp)rp.addEventListener("click",e=>{e.stopPropagation();m.currentTime=0;m.play().catch(()=>{})});
    reveal.observe(f);ro.observe(f);
    if(!isImg)play.observe(m);else if(!still)auto(vp);
   });
