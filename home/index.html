@@ -102,7 +102,7 @@ body.done .work{opacity:1;visibility:visible;transition:opacity .8s .1s,visibili
 
 /* case studies */
 .wk{--m:clamp(80px,11vw,160px);--lw:max(24vw,300px);--mute:color-mix(in srgb,var(--ink) 52%,transparent);font-size:13px;line-height:1.4;letter-spacing:-.005em;padding:0 var(--m) 160px}
-.intro{display:grid;grid-template-columns:50% minmax(0,1fr);padding:max(120px,8.6vw) 0 max(32px,3.6vw);border-bottom:1px solid var(--line)}
+.intro{display:grid;grid-template-columns:50% minmax(0,1fr);padding:max(120px,8.6vw) 0 max(32px,3.6vw)}
 .intro>div{grid-column:2;padding-right:0}
 .eyebrow{margin:0 0 12px;font-size:11px;line-height:1.2;text-transform:uppercase;color:var(--mute)}
 .lead{margin:0;max-width:21em;font-weight:400;font-size:clamp(20px,2.3vw,36px);line-height:1.17;letter-spacing:-.02em}
@@ -254,6 +254,7 @@ body.skipok .esc{opacity:.85;pointer-events:auto}
 :root[data-theme="dark"] .logo svg{fill:#fff}
 
 /* line + label that starts the Visual designs and Motion UI sections */
+.sel:not(.sep){border-top:1px solid var(--line)}
 .sel.sep{margin-top:clamp(40px,5.6vw,88px);padding-top:18px;border-top:1px solid var(--line)}
 /* visual designs: slider with device frames (reuses the portfolio's case layout + tokens) */
 .vcase .ctitle{margin-bottom:clamp(16px,2vw,24px);font-size:clamp(16px,1.5vw,22px);line-height:1.2}
@@ -411,6 +412,70 @@ background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,255,255,.62));-
 @media (max-width:600px){.stats{grid-template-columns:1fr}}
 /* sub-section headings repeat their short description: hidden visually, still read by screen readers */
 .blk.sub>h3.bh{position:absolute;width:1px;height:1px;margin:-1px;padding:0;border:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* skills ticker: one line, dotted letters, slow scroll, sits under the intro text */
+.sks{--skd:color-mix(in srgb,var(--ink) 62%,transparent);display:block;margin:clamp(28px,4vw,56px) calc(-1*var(--m));overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.sk-row{overflow:hidden}
+.sk-track{display:flex;width:max-content;animation:skl var(--t,90s) linear infinite}
+.sks:hover .sk-track{animation-play-state:paused}
+.sk-set{display:flex;flex:none;margin:0;padding:0;list-style:none}
+.sk{display:flex;align-items:center;flex:none}
+.sk b{font-weight:600;font-size:clamp(22px,2.2vw,30px);line-height:1.3;letter-spacing:-.01em;white-space:nowrap;color:transparent;-webkit-text-fill-color:transparent;background:radial-gradient(circle at 50% 50%,var(--skd) .95px,transparent 1.4px) 0 0/3px 3px;-webkit-background-clip:text;background-clip:text}
+.sk i{flex:none;width:6px;height:6px;border-radius:50%;background:var(--skd);margin:0 clamp(16px,2vw,28px)}
+@keyframes skl{to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.sk-track{animation:none;width:auto;flex-wrap:wrap}.sk-set[aria-hidden]{display:none}.sk-set{flex-wrap:wrap;padding:0 var(--m)}}
+
+/* resume popup */
+.rs{--g:clamp(20px,6vw,96px);--mute:color-mix(in srgb,var(--ink) 58%,transparent);position:fixed;inset:0;z-index:60;background:var(--bg);color:var(--ink);overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;visibility:hidden;opacity:0;transform:translateY(4vh);transition:opacity .45s,transform .6s cubic-bezier(.2,.7,.2,1),visibility 0s .6s;font-size:15px;line-height:1.6;letter-spacing:-.005em;outline:none}
+.rs.on{visibility:visible;opacity:1;transform:none;transition-delay:0s}
+.rs-bar{position:sticky;top:0;z-index:3;display:flex;justify-content:flex-end;align-items:center;gap:10px;height:calc(64px + env(safe-area-inset-top,0px));padding:env(safe-area-inset-top,0px) var(--g) 0;background:color-mix(in srgb,var(--bg) 82%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.rs-bar a.cs-x{text-decoration:none}
+.rs-bar .pri{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.rs-bar .pri:hover{background:var(--ink);opacity:.88}
+.rs-bar svg.dl{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.rs-pg{display:grid;grid-template-columns:minmax(220px,30%) minmax(0,1fr);gap:clamp(32px,6vw,96px);max-width:1180px;margin:0 auto;padding:clamp(20px,4vw,56px) var(--g) clamp(72px,9vw,128px)}
+.rs-side{align-self:start;position:sticky;top:96px;display:grid;gap:26px}
+.rs h1{margin:0;font-weight:300;font-size:clamp(34px,4vw,56px);line-height:1.05;letter-spacing:-.035em}
+.rs-role{margin:10px 0 0;font-size:17px;color:var(--mute)}
+.rs-links{display:flex;flex-wrap:wrap;gap:8px}
+.rs-links a{display:inline-flex;padding:8px 16px;border-radius:999px;border:1px solid var(--line);background:var(--pill);color:inherit;font-size:13px;line-height:1.2;text-decoration:none;transition:border-color .25s}
+.rs-links a:hover{border-color:var(--ink)}
+.rs-side h2{margin:0 0 8px;font-size:13px;font-weight:500;color:var(--mute)}
+.rs-side p{margin:0}
+.rs h2.rs-sec{margin:0 0 20px;font-weight:300;font-size:clamp(24px,2.6vw,38px);line-height:1.1;letter-spacing:-.03em}
+.rs-main>section+section{margin-top:clamp(44px,6vw,80px)}
+.rs-sum p{margin:0 0 14px;max-width:62ch}
+.rs-sum p:last-child{margin:0}
+.rs-exp{position:relative;display:grid;gap:16px;padding-left:26px}
+.rs-exp::before{content:"";position:absolute;left:5px;top:10px;bottom:10px;width:2px;border-radius:2px;background:linear-gradient(var(--g1),var(--g2),var(--g3),var(--g4));opacity:.6}
+.rs-job{position:relative;padding:20px 22px;background:var(--pill);border:1px solid var(--line);border-radius:12px}
+.rs-job::before{content:"";position:absolute;left:-26px;top:27px;width:12px;height:12px;border-radius:50%;background:var(--bg);border:2px solid var(--g2)}
+.rs-jh{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 16px}
+.rs-job h3{margin:0;font-weight:500;font-size:18px;line-height:1.3;letter-spacing:-.01em}
+.rs-co{margin:4px 0 0;font-weight:500}
+.rs-dt{margin:2px 0 0;color:var(--mute);font-size:13.5px}
+.rs-job ul{margin:14px 0 0;padding-left:18px}
+.rs-job li{margin:0 0 9px;padding-left:2px}
+.rs-job li:last-child{margin:0}
+.rs-job li::marker{color:var(--mute)}
+.rs-job a{text-underline-offset:3px;text-decoration-color:var(--mute)}
+.rs-award{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;border:1px solid var(--line);background:var(--bg);font-size:12px;font-weight:500;line-height:1.2}
+.rs-award svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.rs-sk{display:grid;gap:22px}
+.rs-sk h3{margin:0 0 10px;font-size:13px;font-weight:500;color:var(--mute)}
+.rs-chips{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}
+.rs-chips li{padding:6px 14px;border-radius:999px;border:1px solid var(--line);background:var(--pill);font-size:13px;line-height:1.3}
+@media (max-width:900px){.rs-pg{grid-template-columns:1fr;gap:40px}.rs-side{position:static}}
+@media (max-width:520px){.rs-job{padding:16px}.rs-bar .cs-x.pri span{display:none}}
+@media (prefers-reduced-motion:reduce){.rs{transition:none}}
+
+/* back-to-top */
+.totop{appearance:none;position:fixed;z-index:80;right:calc(24px + env(safe-area-inset-right,0px));bottom:calc(24px + env(safe-area-inset-bottom,0px));width:44px;height:44px;display:grid;place-items:center;padding:0;border-radius:50%;border:1px solid var(--line);background:color-mix(in srgb,var(--bg) 86%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:var(--ink);cursor:pointer;opacity:0;visibility:hidden;transform:translateY(10px);transition:opacity .3s,transform .3s,visibility 0s .3s,background .3s,border-color .3s}
+.totop.on{opacity:1;visibility:visible;transform:none;transition-delay:0s}
+.totop:hover{background:var(--btn);border-color:var(--ink)}
+.totop:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.totop svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+@media (prefers-reduced-motion:reduce){.totop{transition:none}}
+
 
 .kpi{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
 .kpi li{padding:6px 12px;border:1px solid var(--line);border-radius:999px;font-size:12px;line-height:1.2;background:var(--pill)}
@@ -473,7 +538,7 @@ background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,255,255,.62));-
 <nav class="dots" id="dots" aria-label="Process stages"><button type="button" aria-label="AI Define">A</button><button type="button" aria-label="Ideate">I</button><button type="button" aria-label="Unify">U</button><button type="button" aria-label="eXplore">X</button><button type="button" aria-label="Deliver">D</button></nav>
 <nav class="contact" aria-label="Contact">
   <a href="https://www.linkedin.com/in/designermadhu/" target="_blank" rel="noopener" data-tip="LinkedIn" aria-label="LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 11v5M8 8v.01M12 16v-5M12 13c0-1.1.9-2 2-2s2 .9 2 2v3"/></svg></a>
-  <a href="Madhu_Sanisetty_Sr_UX_UI_Designer_Resume.pdf" target="_blank" rel="noopener" data-tip="Resume" aria-label="Resume"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg></a>
+  <button type="button" id="resumeBtn" data-tip="Resume" aria-label="Open resume" aria-haspopup="dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg></button>
   <button class="ti" id="theme" type="button" data-tip="Dark mode" aria-label="Switch to dark mode"><svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7z"/></svg><svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.2M12 19.3v2.2M4.9 4.9l1.6 1.6M17.5 17.5l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.9 19.1l1.6-1.6M17.5 6.5l1.6-1.6"/></svg></button>
 </nav>
 <button class="logo" id="logo" type="button" aria-label="Replay animation"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg></i></button>
@@ -484,6 +549,19 @@ background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,255,255,.62));-
 <div class="seep" id="seep" aria-hidden="true"><span>see project</span></div>
 <div class="work" id="work" tabindex="-1"></div>
 <div class="vz" id="vz" role="dialog" aria-modal="true" aria-label="All screens" aria-hidden="true"><div class="vz-bar"><span class="vz-t" id="vzt"></span><button class="cs-x" id="vzx" type="button">Close<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1.5 1.5l9 9M10.5 1.5l-9 9"/></svg></button></div><div class="vz-b" id="vzb"></div></div>
+<div class="rs" id="rs" role="dialog" aria-modal="true" aria-label="Resume" aria-hidden="true" tabindex="-1"><div class="rs-bar"><a class="cs-x pri" href="Madhu_Sanisetty_Sr_UX_UI_Designer_Resume.pdf" download aria-label="Download resume as PDF"><svg class="dl" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg><span>Download PDF</span></a><button class="cs-x" id="rsx" type="button">Close<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1.5 1.5l9 9M10.5 1.5l-9 9"/></svg></button></div>
+<div class="rs-pg"><aside class="rs-side"><div><h1>Madhu Sanisetty</h1><p class="rs-role">Senior UX/UI Designer</p></div>
+<div class="rs-links"><a href="https://www.linkedin.com/in/designermadhu/" target="_blank" rel="noopener">LinkedIn</a></div>
+<div><h2>Education</h2><p>B.Sc. in Computer Science</p></div>
+<div><h2>Languages</h2><ul class="rs-chips"><li>English</li><li>Hindi</li><li>Telugu (Native)</li><li>Tamil</li></ul></div></aside>
+<div class="rs-main"><section class="rs-sum" aria-labelledby="rs-h-sum"><h2 class="rs-sec" id="rs-h-sum">Summary</h2>
+<p>Product designer with end-to-end experience across AI, SaaS, B2B, and B2C products, spanning FinTech, EdTech, HealthTech, PropTech, Immigration, HR Tech, eSign, Workflow Automation, and Sports Tech. I turn complex business problems into simple, scalable products that users adopt and teams can build.</p>
+<p>Strong in research, interaction design, information architecture, and design systems, with a data-informed and accessibility-first mindset (WCAG). Experienced in Agile collaboration with product and engineering.</p>
+<p>Early adopter of AI-assisted design, using Figma AI, Cursor, Claude, and Gemini to speed up ideation, prototyping, and system scaling.</p></section>
+<section aria-labelledby="rs-h-exp"><h2 class="rs-sec" id="rs-h-exp">Work experience</h2><div class="rs-exp"><article class="rs-job"><div class="rs-jh"><h3>Senior UX/UI Consultant</h3></div><p class="rs-co">Confidential Clients (US Healthcare &amp; Real Estate SaaS)</p><p class="rs-dt">Jul 2023 - Till date</p><ul><li>Designed role-based pro dashboards and connected features for property owners, property managers, and tenants, starting with stakeholder interviews and user research, then moving through user flows, information architecture, wireframes, and interactive prototypes, and refining the designs through usability testing and feedback.</li><li>Owned the full design of the HealthRev medical billing website (<a href="https://healthrev.com/" target="_blank" rel="noopener">healthrev.com</a>), from information architecture and conceptual illustrations to responsive UI and SVG animations, simplifying six service lines for medical practices.</li><li>Designed an AI second brain that makes everything you know instantly searchable, working directly with the CEO of startup SelfNeuron (<a href="https://www.selfneuron.ai/" target="_blank" rel="noopener">selfneuron.ai</a>) across web, onboarding, AI search, and desktop sync.</li><li>Delivered development-ready UI and interaction specs in Figma, backed by a scalable design system with reusable components and design tokens.</li><li>Alongside these projects, delivered 45+ mobile and web projects as an independent designer.</li></ul></article><article class="rs-job"><div class="rs-jh"><h3>Senior Manager - UI/UX Design</h3><span class="rs-award"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="9" r="5"/><path d="M9 13.5L7.5 21l4.5-2.5 4.5 2.5-1.5-7.5"/></svg>Rockstart Rockie Award</span></div><p class="rs-co">Univariety (International Educational Gateway Pvt. Ltd.)</p><p class="rs-dt">Nov 2020 - Jul 2023</p><ul><li>Led the UX/UI transformation of the company's core platforms for students, schools, and alumni, redefining the visual identity, interaction patterns, and overall user experience.</li><li>Designed and scaled a SaaS alumni product adopted by 350+ partner schools, balancing the needs of administrators, students, and alumni.</li><li>Launched alumni products and solutions tailored to universities and coaching institutions, shaping product direction from research and prototyping through to delivery.</li></ul></article><article class="rs-job"><div class="rs-jh"><h3>Lead UX/UI Designer</h3><span class="rs-award"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="9" r="5"/><path d="M9 13.5L7.5 21l4.5-2.5 4.5 2.5-1.5-7.5"/></svg>Best Employee Award</span></div><p class="rs-co">Innvectra Info Solutions Pvt. Ltd.</p><p class="rs-dt">Aug 2015 - Nov 2020</p><ul><li>Sole designer turned team lead of 4, delivering 25+ mobile apps and 50+ AI, SaaS, B2B, and B2C projects across FinTech, EdTech, HealthTech, PropTech, Immigration, HR Tech, eSign, Workflow Automation, and Sports Tech.</li><li>Led ideation, concept exploration, and digital strategy, defining navigation, task flows, and interaction strategies aligned with user needs and business goals.</li><li>Delivered wireframes, interactive prototypes, and usability reports, using heuristic evaluations and usability testing to drive UI and interaction improvements.</li><li>Established design systems to ensure consistency, clarity, and efficiency across web and mobile products.</li></ul></article><article class="rs-job"><div class="rs-jh"><h3>UI Designer</h3></div><p class="rs-co">iPowersoft, Inc.</p><p class="rs-dt">Mar 2013 - Aug 2015</p><ul><li>UI Designer &amp; Front-End Developer who built Angular-based responsive web apps and designed iOS and Android interfaces for BayBoon's consumer marketplace and business seller platform, while delivering several other web and mobile applications across the same period.</li></ul></article><article class="rs-job"><div class="rs-jh"><h3>Web Designer</h3></div><p class="rs-co">RMN Infotech Pvt. Ltd.</p><p class="rs-dt">May 2012 - Feb 2013</p><ul><li>Designed websites and OEM apps for mobile and tablet platforms for clients including Karbonn and Celkon, and built responsive web pages using HTML, CSS, and Bootstrap.</li></ul></article></div></section>
+<section aria-labelledby="rs-h-sk"><h2 class="rs-sec" id="rs-h-sk">Skills</h2><div class="rs-sk"><div><h3>Design skills</h3><ul class="rs-chips"><li>User Experience Design</li><li>Interaction Design</li><li>Visual Design</li><li>Motion Design</li><li>Prototyping</li><li>Responsive Design</li><li>Design Systems</li><li>Vibe Coding</li></ul></div><div><h3>UX methods</h3><ul class="rs-chips"><li>User Research</li><li>Wireframes</li><li>User Journeys &amp; Personas</li><li>Competitive Analysis</li><li>Usability Testing</li><li>Heuristic Evaluation</li><li>Accessibility (WCAG)</li><li>Information Architecture</li></ul></div><div><h3>Technical skills</h3><ul class="rs-chips"><li>Figma</li><li>Sketch</li><li>Adobe XD</li><li>Illustrator</li><li>Photoshop</li><li>Fig Jam</li><li>Balsamiq</li><li>Miro Board</li><li>svgator</li><li>Whimsical</li><li>Protopie</li><li>HTML/CSS</li></ul></div></div></section>
+</div></div></div>
+<button class="totop" id="totop" type="button" aria-label="Back to top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
 <div class="cs" id="cs" role="dialog" aria-modal="true" aria-label="Case study" aria-hidden="true"><div class="cs-bar"><button class="cs-x" id="csx" type="button">Close<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1.5 1.5l9 9M10.5 1.5l-9 9"/></svg></button></div><div id="csb"></div></div>
 <button class="esc" id="esc" type="button" aria-label="Skip intro"><span>Press</span><kbd>Esc</kbd><span>to skip</span></button>
 <button class="menu-btn" id="mbtn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mnu"><i></i><i></i><i></i></button>
@@ -495,7 +573,7 @@ background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,255,255,.62));-
   <a href="#" data-sec="3">Tool stack</a>
   <p class="ml">Contact</p>
   <a href="https://www.linkedin.com/in/designermadhu/" target="_blank" rel="noopener">LinkedIn</a>
-  <a href="Madhu_Sanisetty_Sr_UX_UI_Designer_Resume.pdf" target="_blank" rel="noopener">Resume</a>
+  <a href="#" data-resume>Resume</a>
   <p class="ml">Appearance</p>
   <button class="tt" type="button" aria-label="Switch to dark mode"><span class="tl">Dark mode</span></button>
 </nav>
@@ -538,7 +616,13 @@ const work=$("#work");
 work.innerHTML=`<div class="wk"><header class="intro"><div><p class="eyebrow">Senior UX/UI Consultant - Confidential Clients (US Healthcare &amp; Real Estate SaaS)</p><h2 class="lead">I design B2B and AI products, from research to design systems. I also build working prototypes with AI tools.</h2></div></header>`
  +`<div class="sel"><p><svg viewBox="0 0 10 10" aria-hidden="true"><circle cx="5" cy="1.6" r="1"/><circle cx="1.8" cy="7.4" r="1"/><circle cx="8.2" cy="7.4" r="1"/></svg>Selected case studies</p></div>`
  +projects.map((p,i)=>{const name=p.t.join(" \u2014 "),title=p.t.length>1?`${p.t[0]} \u2014<br>${p.t[1]}`:p.t[0];
-  return `<section class="case" aria-label="${name}"><div class="info"><h3 class="ctitle">${title}</h3>${p.d.map(x=>`<p class="desc">${x}</p>`).join("")}${p.stat?`<ul class="kpi">${p.stat.map(x=>`<li>${x}</li>`).join("")}</ul>`:""}<div class="rows">${row("r"+i,"Role",`<p>${p.role}</p>`,true)}${row("c"+i,"Contributions",`<ul>${p.contrib.map(c=>`<li>${c}</li>`).join("")}</ul>`)}</div><a class="vcs" href="${p.href}" data-case="${i}"><span>View case study</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></a></div><a class="shot" href="${p.href}" data-case="${i}" aria-label="${name}"><img src="${IMGS[i]}" alt="${name} preview"></a></section>`}).join("")+`</div>`;
+  return `<section class="case" aria-label="${name}"><div class="info"><h3 class="ctitle">${title}</h3>${p.d.map(x=>`<p class="desc">${x}</p>`).join("")}${p.stat?`<ul class="kpi">${p.stat.map(x=>`<li>${x}</li>`).join("")}</ul>`:""}<div class="rows">${row("r"+i,"Role",`<p>${p.role}</p>`,true)}${row("c"+i,"Contributions",`<ul>${p.contrib.map(c=>`<li>${c}</li>`).join("")}</ul>`)}</div><a class="vcs" href="${p.href}" data-case="${i}"><span>View case study</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></a></div><a class="shot" href="${p.href}" data-case="${i}" aria-label="${name}"><img src="${IMGS[i]}" alt="${name} preview" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src=PICSUM('project-${i}')"></a></section>`}).join("")+`</div>`;
+;(()=>{
+const SK=["User Experience Design","Interaction Design","Visual Design","Motion Design","Prototyping","Responsive Design","Design Systems","Vibe Coding","User Research","Wireframes","User Journeys &amp; Personas","Competitive Analysis","Usability Testing","Heuristic Evaluation","Accessibility (WCAG)","Information Architecture","Figma","Sketch","Adobe XD","Illustrator","Photoshop","Fig Jam","Balsamiq","Miro Board","svgator","Whimsical","Protopie","HTML/CSS"];
+const set=(a,hide)=>`<ul class="sk-set"${hide?' aria-hidden="true"':''}>${a.map(t=>`<li class="sk"><b>${t}</b><i></i></li>`).join("")}</ul>`;
+work.querySelector(".intro").insertAdjacentHTML("afterend",
+ `<section class="sks" aria-label="Skills"><div class="sk-row" style="--t:${Math.round(SK.join("").length*.34)}s"><div class="sk-track">${set(SK,false)}${set(SK,true)}</div></div></section>`);
+})();;;
 work.addEventListener("click",e=>{const b=e.target.closest(".rh");if(!b)return;const r=b.parentElement,o=!r.classList.contains("open");r.classList.toggle("open",o);b.setAttribute("aria-expanded",o)});
 /* soft gradient colours, picked from the project image (falls back to the default blue / purple / pink if the image cannot be read) */
 const PC={};
@@ -664,6 +748,20 @@ function openCase(i,from){if(from)csFrom=from;renderCase(i);cs.classList.add("on
 function closeCase(){cs.classList.remove("on");cs.setAttribute("aria-hidden","true");lock(false);if(csFrom)csFrom.focus({preventScroll:true})}
 work.addEventListener("click",e=>{const a=e.target.closest("[data-case]");if(!a)return;e.preventDefault();openCase(+a.dataset.case,a)});
 csx.addEventListener("click",closeCase);
+/* resume popup */
+const rs=$("#rs"),rsx=$("#rsx");let rsFrom=null;
+function openResume(from){if(from)rsFrom=from;rs.classList.add("on");rs.setAttribute("aria-hidden","false");rs.scrollTop=0;lock(true);rsx.focus({preventScroll:true});tt()}
+function closeResume(){rs.classList.remove("on");rs.setAttribute("aria-hidden","true");lock(false);if(rsFrom&&rsFrom.offsetParent!==null)rsFrom.focus({preventScroll:true});tt()}
+$("#resumeBtn").addEventListener("click",e=>openResume(e.currentTarget));
+rsx.addEventListener("click",closeResume);
+/* back-to-top: follows whichever layer is on top */
+const topb=$("#totop");
+const layer=()=>{const v=document.getElementById("vz");return v&&v.classList.contains("on")?v:rs.classList.contains("on")?rs:cs.classList.contains("on")?cs:work};
+function tt(){topb.classList.toggle("on",layer().scrollTop>400)}
+document.addEventListener("scroll",e=>{if(e.target===layer())tt()},{passive:true,capture:true});
+topb.addEventListener("click",()=>{const l=layer();l.scrollTo({top:0,behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"instant":"smooth"})});
+new MutationObserver(tt).observe(document.body,{subtree:true,attributes:true,attributeFilter:["class"]});
+
 csb.addEventListener("click",e=>{
   const g=e.target.closest("[data-go]");if(g)renderCase(+g.dataset.go);
 });
@@ -833,6 +931,7 @@ set(false);
 btn.addEventListener("click",()=>set(!mnu.classList.contains("on")));
 mnu.addEventListener("click",e=>{
   const a=e.target.closest("a");if(!a)return;
+  if(a.hasAttribute("data-resume")){e.preventDefault();set(false);openResume(a);return}
   if(a.dataset.sec!=null){e.preventDefault();set(false);const el=secs[+a.dataset.sec];
     if(el)work.scrollTo({top:Math.max(0,el.getBoundingClientRect().top-work.getBoundingClientRect().top+work.scrollTop-72),behavior:"smooth"})}
   else set(false);
@@ -841,7 +940,7 @@ addEventListener("keydown",e=>{if(e.key==="Escape"&&mnu.classList.contains("on")
 matchMedia("(min-width:901px)").addEventListener("change",e=>{if(e.matches)set(false)});
 })();
 
-document.addEventListener("keydown",e=>{if(e.key==="Escape"){if(cs.classList.contains("on"))closeCase();else skipIntro()}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){if(rs.classList.contains("on"))closeResume();else if(cs.classList.contains("on"))closeCase();else skipIntro()}});
 document.getElementById("esc").addEventListener("click",()=>skipIntro());
 /* dotted background + gradient spotlight that follows the pointer */
 (()=>{
