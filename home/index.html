@@ -427,13 +427,13 @@ background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,255,255,.62));-
 /* sub-section headings repeat their short description: hidden visually, still read by screen readers */
 .blk.sub>h3.bh{position:absolute;width:1px;height:1px;margin:-1px;padding:0;border:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 /* skills ticker: one line, dotted letters, slow scroll, sits under the intro text */
-.sks{--skd:color-mix(in srgb,var(--ink) 62%,transparent);display:block;margin:clamp(28px,4vw,56px) calc(-1*var(--m));overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.sks{--skd:var(--ink);display:block;margin:clamp(28px,4vw,56px) calc(-1*var(--m));overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
 .sk-row{overflow:hidden;padding:10px 0}
 .sk-track{display:flex;width:max-content;animation:skl var(--t,90s) linear infinite}
 .sks:hover .sk-track{animation-play-state:paused}
 .sk-set{display:flex;flex:none;margin:0;padding:0;list-style:none}
 .sk{display:flex;align-items:center;flex:none}
-.sk b{font-weight:600;font-size:clamp(22px,2.2vw,30px);line-height:1.3;letter-spacing:-.01em;white-space:nowrap;color:transparent;-webkit-text-fill-color:transparent;background:radial-gradient(circle at 50% 50%,var(--skd) .95px,transparent 1.4px) 0 0/3px 3px;-webkit-background-clip:text;background-clip:text}
+.sk b{font-weight:400;font-size:clamp(18px,1.85vw,24px);line-height:1.3;letter-spacing:-.01em;white-space:nowrap;color:transparent;-webkit-text-fill-color:transparent;background:radial-gradient(circle at 50% 50%,var(--skd) .88px,transparent .96px) 0 0/2.5px 2.5px;-webkit-background-clip:text;background-clip:text}
 .sk i.sic{flex:none;display:grid;place-items:center;width:24px;height:24px;margin:0 clamp(18px,2.4vw,36px);border-radius:0;background:none}
 .sic svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;overflow:visible;transform-origin:50% 50%;transform-box:fill-box}
 .a-bob svg{animation:ibob 2.2s ease-in-out infinite}
