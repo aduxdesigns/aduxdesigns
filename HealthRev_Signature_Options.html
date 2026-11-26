@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HealthRev Email Signature Generator</title>
+<style>
+  :root { --navy:#1D3766; --grey:#8C8B8D; --line:#D9DEE8; --bg:#F4F6FA; --ok:#1E8E4E; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:Arial, Helvetica, sans-serif; color:var(--navy); background:var(--bg); }
+  .app { display:flex; min-height:100vh; }
+  .panel { width:320px; flex:none; background:#fff; border-right:1px solid var(--line); padding:28px 24px; }
+  .panel h1 { font-size:18px; margin:0 0 4px; }
+  .panel p { font-size:13px; color:var(--grey); margin:0 0 22px; }
+  label { display:block; font-size:12px; margin:0 0 6px; }
+  input { width:100%; padding:10px 12px; margin-bottom:16px; border:1px solid var(--line); border-radius:6px; font:14px Arial, Helvetica, sans-serif; color:var(--navy); }
+  input:focus { outline:2px solid var(--navy); outline-offset:1px; }
+  .stage { flex:1; padding:28px 40px; min-width:0; }
+  .stage h2 { font-size:14px; margin:0 0 14px; }
+  #cards { display:grid; grid-template-columns:1fr 1fr; gap:20px; align-items:start; }
+  @media (max-width:1150px){ #cards{grid-template-columns:1fr;} }
+  .card { background:#fff; border:1px solid var(--line); border-radius:8px; padding:20px 24px 26px; margin:0; transition:box-shadow .25s, border-color .25s; }
+  .card.flash { border-color:var(--ok); box-shadow:0 0 0 4px rgba(30,142,78,.25); }
+  .head { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:22px; }
+  .head b { font-size:14px; display:block; }
+  .head span { font-size:12px; color:var(--grey); display:block; margin-top:3px; }
+  .head { align-items:flex-start; }
+  .sigwrap { overflow-x:auto; }
+  button { background:var(--navy); color:#fff; border:0; border-radius:6px; padding:9px 16px; font:bold 13px Arial, Helvetica, sans-serif; cursor:pointer; white-space:nowrap; }
+  button:hover { background:#16294d; }
+  button:focus-visible { outline:2px solid var(--navy); outline-offset:2px; }
+  button.done, button.done:hover { background:var(--ok); }
+  .toast { position:fixed; left:50%; bottom:32px; transform:translate(-50%,20px); background:var(--ok); color:#fff; padding:14px 22px; border-radius:8px; font-size:14px; font-weight:bold; box-shadow:0 8px 24px rgba(0,0,0,.2); opacity:0; pointer-events:none; transition:opacity .25s, transform .25s; z-index:10; }
+  .toast.show { opacity:1; transform:translate(-50%,0); }
+  .toast.fail { background:#C0392B; }
+  @media (max-width:760px){ .app{flex-direction:column;} .panel{width:100%;border-right:0;border-bottom:1px solid var(--line);} .stage{padding:20px;} }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="panel">
+    <h1>Email signature</h1>
+    <p>Edit the details. All versions update and the line fits each one.</p>
+    <label for="name">Name</label>
+    <input id="name" value="Jane Doe" placeholder="Full name" autocomplete="off">
+    <label for="title">Designation</label>
+    <input id="title" value="Job Title, HealthRev Works" placeholder="Job title" autocomplete="off">
+    <label for="phone">Phone</label>
+    <input id="phone" value="555.123.4567 x 1234" placeholder="Phone" autocomplete="off">
+    <label for="mobile">Mobile</label>
+    <input id="mobile" value="555.987.6543" placeholder="Mobile" autocomplete="off">
+    <label for="web">Website</label>
+    <input id="web" value="healthrev.com" placeholder="Website" autocomplete="off">
+  </div>
+  <div class="stage">
+    <h2>Versions: regular line (left) and thin line (right)</h2>
+    <div id="cards"></div>
+  </div>
+</div>
+<div id="toast" class="toast" role="status"></div>
+
+<script>
+var BASE = "https://aduxdesigns.github.io/aduxdesigns/HRS/";
+var ids = ["name","title","phone","mobile","web"];
+var el = {}; ids.forEach(function(i){ el[i] = document.getElementById(i); });
+var VERSIONS = [
+  { id:1, title:"Version 1", note:"Line starts after the logo. Icons stay in the logo column." },
+  { id:2, title:"Version 2", note:"Line starts after the logo. Details line up with the name." },
+  { id:3, title:"Version 3", note:"Full-width line under the logo, tight gap." }
+];
+
+function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+var ctx = document.createElement("canvas").getContext("2d");
+function textW(s, px){ ctx.font = px + "px Arial, Helvetica, sans-serif"; return Math.ceil(ctx.measureText(s).width) + 3; }
+function telHref(s){
+  var p = s.split(/x|ext\.?/i), main = p[0].replace(/\D/g,""), ext = (p[1]||"").replace(/\D/g,"");
+  if (main.length === 10) main = "1" + main;
+  return "tel:+" + main + (ext ? "," + ext : "");
+}
+function gap(h, span){
+  return '<tr><td colspan="'+(span||3)+'" height="'+h+'" style="height:'+h+'px;padding:0;font-size:'+h+'px;line-height:'+h+'px;mso-line-height-rule:exactly;">&nbsp;</td></tr>';
+}
+var TXT = 'padding:0;font-family:Arial, Helvetica, sans-serif;font-size:11px;line-height:16px;mso-line-height-rule:exactly;color:#1D3766;white-space:nowrap;';
+var LINK = 'style="color:#1D3766 !important;text-decoration:none !important;font-family:Arial, Helvetica, sans-serif;"';
+
+function items(d){
+  var a = [];
+  if (d.phone) a.push(["phone.png", '<a href="'+telHref(d.phone)+'" '+LINK+'>'+esc(d.phone)+'</a>']);
+  if (d.mobile) a.push(["mobile.png", '<a href="'+telHref(d.mobile)+'" '+LINK+'>'+esc(d.mobile)+'</a>']);
+  if (d.web) {
+    var u = /^https?:\/\//i.test(d.web) ? d.web : "https://" + d.web;
+    a.push(["web.png", '<a href="'+esc(u)+'" target="_blank" style="color:#1D3766 !important;text-decoration:underline !important;font-family:Arial, Helvetica, sans-serif;">'+esc(d.web)+'</a>']);
+  }
+  return a;
+}
+// icon rows: aligned=false -> icon centred in 40px logo column; true -> icon sits in text column
+function rowsHtml(d, aligned){
+  return items(d).map(function(it){
+    var icon = '<img src="'+BASE+it[0]+'" width="16" height="16" alt="" border="0" style="display:block;border:0;outline:none;width:16px;height:16px;margin:0 auto;">';
+    if (aligned) return '<tr><td valign="middle" width="16" style="width:16px;padding:0;">'+icon+'</td><td width="8" style="width:8px;padding:0;font-size:0;line-height:0;">&nbsp;</td><td valign="middle" style="'+TXT+'">'+it[1]+'</td></tr>';
+    return '<tr><td valign="middle" align="center" width="40" style="width:40px;padding:0;">'+icon+'</td><td width="10" style="width:10px;padding:0;font-size:0;line-height:0;">&nbsp;</td><td valign="middle" style="'+TXT+'">'+it[1]+'</td></tr>';
+  }).join(gap(6));
+}
+var LH = 2;
+function lineHtml(w){
+  var l = w - 6;
+  return '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="'+w+'" style="border-collapse:collapse;width:'+w+'px;"><tr>' +
+    '<td valign="middle" width="'+l+'" style="width:'+l+'px;padding:0;font-size:0;line-height:0;"><img src="'+BASE+'divider-line-3x.png" width="'+l+'" height="'+LH+'" alt="" border="0" style="display:block;border:0;outline:none;width:'+l+'px;height:'+LH+'px;"></td>' +
+    '<td valign="middle" width="6" style="width:6px;padding:0;font-size:0;line-height:0;"><img src="'+BASE+'divider-dot-3x.png" width="6" height="6" alt="" border="0" style="display:block;border:0;outline:none;width:6px;height:6px;"></td></tr></table>';
+}
+function head(d, topW){
+  return '<tr><td valign="middle" width="40" style="width:40px;padding:0;"><img src="'+BASE+'logo.png" width="40" height="40" alt="HealthRev Works" border="0" style="display:block;border:0;outline:none;width:40px;height:40px;"></td>' +
+    '<td width="10" style="width:10px;padding:0;font-size:0;line-height:0;">&nbsp;</td>' +
+    '<td valign="middle" style="padding:0 15px 0 0;font-family:Arial, Helvetica, sans-serif;white-space:nowrap;"><table role="presentation" cellpadding="0" cellspacing="0" border="0">' +
+    '<tr><td style="font-family:Arial, Helvetica, sans-serif;font-size:12px;line-height:16px;mso-line-height-rule:exactly;color:#1D3766;padding:0;white-space:nowrap;"><font face="Arial, Helvetica, sans-serif" color="#1D3766">'+esc(d.name)+'</font></td></tr>' +
+    '<tr><td height="3" style="height:3px;padding:0;font-size:3px;line-height:3px;mso-line-height-rule:exactly;">&nbsp;</td></tr>' +
+    '<tr><td style="font-family:Arial, Helvetica, sans-serif;font-size:11px;line-height:14px;mso-line-height-rule:exactly;color:#8C8B8D;padding:0;white-space:nowrap;"><font face="Arial, Helvetica, sans-serif" color="#8C8B8D">'+esc(d.title)+'</font></td></tr>' +
+    '</table></td></tr>';
+}
+function wrap(total, inner){
+  return '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="'+total+'" style="border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;width:'+total+'px;font-family:Arial, Helvetica, sans-serif;font-size:11px;color:#1D3766;">'+inner+'</table>';
+}
+
+function build(v, d, lh){
+  LH = lh;
+  var topW = 50 + Math.max(textW(d.name,12), textW(d.title,11)) + 15;
+  var cw = Math.max(d.phone ? textW(d.phone,11) : 0, d.mobile ? textW(d.mobile,11) : 0, d.web ? textW(d.web,11) : 0);
+  var rows;
+  if (v === 1) {
+    var total = Math.max(topW, 50 + cw, 200);
+    rows = head(d) + gap(7) +
+      '<tr><td width="40" style="width:40px;padding:0;font-size:0;line-height:0;">&nbsp;</td><td width="10" style="width:10px;padding:0;font-size:0;line-height:0;">&nbsp;</td><td style="padding:0;font-size:0;line-height:0;">'+lineHtml(total-50)+'</td></tr>' +
+      gap(12) + '<tr><td colspan="3" style="padding:0;"><table role="presentation" cellpadding="0" cellspacing="0" border="0">'+rowsHtml(d,false)+'</table></td></tr>';
+    return wrap(total, rows);
+  }
+  if (v === 2) {
+    var t2 = Math.max(topW, 50 + 24 + cw, 200);
+    rows = head(d) + gap(7) +
+      '<tr><td width="40" style="width:40px;padding:0;font-size:0;line-height:0;">&nbsp;</td><td width="10" style="width:10px;padding:0;font-size:0;line-height:0;">&nbsp;</td><td style="padding:0;font-size:0;line-height:0;">'+lineHtml(t2-50)+'</td></tr>' +
+      gap(12) + '<tr><td width="40" style="width:40px;padding:0;">&nbsp;</td><td width="10" style="width:10px;padding:0;">&nbsp;</td><td style="padding:0;"><table role="presentation" cellpadding="0" cellspacing="0" border="0">'+rowsHtml(d,true)+'</table></td></tr>';
+    return wrap(t2, rows);
+  }
+  var t3 = Math.max(topW, 50 + cw, 200);
+  rows = head(d) + gap(4) +
+    '<tr><td colspan="3" style="padding:0;font-size:0;line-height:0;">'+lineHtml(t3)+'</td></tr>' +
+    gap(12) + '<tr><td colspan="3" style="padding:0;"><table role="presentation" cellpadding="0" cellspacing="0" border="0">'+rowsHtml(d,false)+'</table></td></tr>';
+  return wrap(t3, rows);
+}
+
+var cards = document.getElementById("cards");
+var HEIGHTS = [2, 1];
+VERSIONS.forEach(function(v){
+  HEIGHTS.forEach(function(h){
+    var c = document.createElement("div");
+    c.className = "card"; c.id = "card" + v.id + "-" + h;
+    c.innerHTML = '<div class="head"><div><b>'+v.title+' \u00b7 '+(h===2?'Regular line':'Thin line')+'</b><span>'+v.note+'</span></div><button type="button">Copy signature</button></div><div class="sigwrap"><div class="sig"></div></div>';
+    cards.appendChild(c);
+    c.querySelector("button").addEventListener("click", function(){ copyCard(c, this); });
+  });
+});
+function render(){
+  var d = {}; ids.forEach(function(i){ d[i] = el[i].value.trim(); });
+  VERSIONS.forEach(function(v){
+    HEIGHTS.forEach(function(h){ document.querySelector("#card"+v.id+"-"+h+" .sig").innerHTML = build(v.id, d, h); });
+  });
+}
+ids.forEach(function(i){ el[i].addEventListener("input", render); });
+render();
+
+function copyCard(card, btn){
+  var ok = false;
+  try {
+    var r = document.createRange(); r.selectNodeContents(card.querySelector(".sig"));
+    var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+    ok = document.execCommand("copy"); s.removeAllRanges();
+  } catch (e) { ok = false; }
+  var toast = document.getElementById("toast");
+  toast.textContent = ok ? "Signature copied. Paste it into Outlook." : "Copy failed. Select the preview and press Ctrl+C.";
+  toast.classList.toggle("fail", !ok); toast.classList.add("show");
+  if (ok) { btn.textContent = "Copied \u2713"; btn.classList.add("done"); card.classList.add("flash"); }
+  clearTimeout(window._t);
+  window._t = setTimeout(function(){
+    toast.classList.remove("show");
+    document.querySelectorAll(".card").forEach(function(c){ c.classList.remove("flash"); });
+    document.querySelectorAll(".card button").forEach(function(b){ b.textContent = "Copy signature"; b.classList.remove("done"); });
+  }, 2500);
+}
+</script>
+</body>
+</html>
