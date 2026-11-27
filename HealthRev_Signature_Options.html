@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HealthRev Email Signature Generator</title>
 <style>
-  :root { --navy:#1D3766; --grey:#8C8B8D; --line:#D9DEE8; --bg:#F4F6FA; --ok:#1E8E4E; }
+  :root { --navy:#231F20; --grey:#8C8B8D; --line:#D9D9DA; --bg:#F2F2F2; --ok:#231F20; }
   * { box-sizing:border-box; }
   body { margin:0; font-family:Arial, Helvetica, sans-serif; color:var(--navy); background:var(--bg); }
   .app { display:flex; min-height:100vh; }
@@ -25,13 +25,19 @@
   @media (max-width:1000px){ #cards{grid-template-columns:1fr;} }
   .card { background:#fff; border:1px solid var(--line); border-radius:8px; padding:0; margin:0; overflow:hidden; }
   .sigwrap { transition:background .25s, box-shadow .25s; }
-  .sigwrap.flash { background:#EAF7EF; box-shadow:inset 0 0 0 2px var(--ok); }
-  .head { display:flex; justify-content:space-between; align-items:center; gap:12px; background:#F5F8FC; border-bottom:1px solid var(--line); padding:14px 20px; }
+  .sigwrap.flash { background:#EDEDED; box-shadow:inset 0 0 0 2px var(--ok); }
+  .head { display:flex; justify-content:space-between; align-items:center; gap:12px; background:#F7F7F7; border-bottom:1px solid var(--line); padding:14px 20px; }
   .head b { font-size:14px; display:block; }
   .head span { font-size:12px; color:var(--grey); display:block; margin-top:3px; }
+  .weights { display:flex; align-items:center; gap:8px; padding:10px 20px; border-bottom:1px solid var(--line); font-size:12px; }
+  .weights .lbl { color:var(--grey); margin-right:2px; }
+  .weights .seg { display:inline-flex; background:#F1F1F2; border:1px solid #DCDCDD; border-radius:999px; padding:2px; gap:2px; }
+  .weights button { width:auto; background:transparent; color:#6B6869; border:0; border-radius:999px; padding:5px 14px; font-size:12px; font-weight:600; }
+  .weights button:hover { background:#E4E4E5; color:#231F20; }
+  .weights button.on, .weights button.on:hover { background:#fff; color:#231F20; box-shadow:0 1px 2px rgba(35,31,32,.15), 0 0 0 1px #DCDCDD; }
   .sigwrap { overflow-x:auto; padding:24px 24px 28px; }
   button { background:#fff; color:var(--navy); border:1px solid var(--navy); border-radius:999px; width:150px; padding:9px 0; text-align:center; font:600 13px Arial, Helvetica, sans-serif; cursor:pointer; white-space:nowrap; transition:background .15s, color .15s, border-color .15s; }
-  button:hover { background:#2F8FD8; border-color:#2F8FD8; color:#fff; }
+  button:hover { background:#5A5859; border-color:#5A5859; color:#fff; }
   button:focus-visible { outline:2px solid var(--navy); outline-offset:2px; }
   button.done, button.done:hover { background:var(--ok); border-color:var(--ok); color:#fff; }
   .toast { position:fixed; left:50%; bottom:32px; transform:translate(-50%,20px); background:var(--ok); color:#fff; padding:14px 22px; border-radius:8px; font-size:14px; font-weight:bold; box-shadow:0 8px 24px rgba(0,0,0,.2); opacity:0; pointer-events:none; transition:opacity .25s, transform .25s; z-index:10; }
@@ -89,7 +95,7 @@ var VERSIONS = [
 ];
 var THICKNESS = [
   { key:"medium",  label:"Medium line",  h:3, nw:"bold" },
-  { key:"regular", label:"Regular line", h:2, nw:"semibold" },
+  { key:"regular", label:"Regular line", h:2, nw:"medium" },
   { key:"thin",    label:"Thin line",    h:1, nw:"regular" }
 ];
 
@@ -116,14 +122,14 @@ function gap(h, span){
   var cs = span === 0 ? "" : ' colspan="'+(span||3)+'"';
   return '<tr><td'+cs+' height="'+h+'" style="height:'+h+'px;padding:0;font-size:'+h+'px;line-height:'+h+'px;mso-line-height-rule:exactly;">&nbsp;</td></tr>';
 }
-var TXT = 'padding:0;font-family:Calibri, Arial, Helvetica, sans-serif;font-size:'+(11+FS)+'px;line-height:'+(16+FS)+'px;mso-line-height-rule:exactly;color:#1D3766;white-space:nowrap;';
-var LINK = 'style="color:#1D3766 !important;text-decoration:none !important;font-family:Calibri, Arial, Helvetica, sans-serif;"';
+var TXT = 'padding:0;font-family:Calibri, Arial, Helvetica, sans-serif;font-size:'+(11+FS)+'px;line-height:'+(16+FS)+'px;mso-line-height-rule:exactly;color:#231F20;white-space:nowrap;';
+var LINK = 'style="color:#231F20 !important;text-decoration:none !important;font-family:Calibri, Arial, Helvetica, sans-serif;"';
 
 function items(d){
   var a = [];
   if (d.phoneText) a.push(["phone.png", '<a href="'+telHref(d.phone, d.ext)+'" '+LINK+'>'+esc(d.phoneText)+'</a>']);
   if (d.mobile) a.push(["mobile.png", '<a href="'+telHref(d.mobile)+'" '+LINK+'>'+esc(d.mobile)+'</a>']);
-  a.push(["web.png", '<a href="https://'+WEB+'" target="_blank" style="color:#1D3766 !important;text-decoration:underline !important;font-family:Calibri, Arial, Helvetica, sans-serif;">'+WEB+'</a>']);
+  a.push(["web.png", '<a href="https://'+WEB+'" target="_blank" style="color:#231F20 !important;text-decoration:underline !important;font-family:Calibri, Arial, Helvetica, sans-serif;">'+WEB+'</a>']);
   return a;
 }
 // aligned=false -> icon centred in 40px logo column; true -> icon sits in text column
@@ -145,18 +151,23 @@ function lineHtml(w){
     '<td valign="middle" width="'+D+'" style="width:'+D+'px;padding:0;font-size:0;line-height:0;"><img src="'+BASE+'divider-dot-3x.png" width="'+D+'" height="'+D+'" alt="" border="0" style="display:block;border:0;outline:none;width:'+D+'px;height:'+D+'px;"></td></tr></table>';
 }
 var NAME_STYLES = {
-  bold:     { fam:"Calibri, Arial, Helvetica, sans-serif", face:"Calibri, Arial, Helvetica, sans-serif", w:"bold", tag:true },
-  semibold: { fam:"Calibri, Arial, Helvetica, sans-serif", face:"Calibri, Arial, Helvetica, sans-serif", w:"600", tag:false },
-  regular:  { fam:"Calibri, Arial, Helvetica, sans-serif", face:"Calibri, Arial, Helvetica, sans-serif", w:"normal", tag:false }
+  bold:    { fam:"Calibri, Arial, Helvetica, sans-serif", face:"Calibri, Arial, Helvetica, sans-serif", w:"bold", tag:true },
+  medium:  { fam:"Calibri, Arial, Helvetica, sans-serif", face:"Calibri, Arial, Helvetica, sans-serif", w:"normal", tag:false },
+  regular: { fam:"Calibri Light, Calibri, Arial, Helvetica, sans-serif", face:"Calibri Light, Calibri, Arial, Helvetica, sans-serif", w:"normal", tag:false }
 };
+var WEIGHTS = [
+  { key:"regular", label:"Normal" },
+  { key:"medium",  label:"Medium" },
+  { key:"bold",    label:"Bold" }
+];
 var NAME = NAME_STYLES.bold;
 function nameWidth(s){ ctx.font = NAME.w + " " + (12+FS) + "px " + NAME.fam; return Math.ceil(ctx.measureText(s).width) + 3; }
 function nameCell(d, lh){
   var t = esc(d.name); if (NAME.tag) t = '<b>'+t+'</b>';
-  return '<td style="font-family:'+NAME.fam+';font-size:'+(12+FS)+'px;font-weight:'+NAME.w+';line-height:'+(lh+FS)+'px;mso-line-height-rule:exactly;color:#1D3766;padding:0;white-space:nowrap;"><font face="'+NAME.face+'" color="#1D3766">'+t+'</font></td>';
+  return '<td style="font-family:'+NAME.fam+';font-size:'+(12+FS)+'px;font-weight:'+NAME.w+';line-height:'+(lh+FS)+'px;mso-line-height-rule:exactly;color:#231F20;padding:0;white-space:nowrap;"><font face="'+NAME.face+'" color="#231F20">'+t+'</font></td>';
 }
 function titleCell(d, lh){
-  return '<td style="font-family:Calibri, Arial, Helvetica, sans-serif;font-size:'+(11+FS)+'px;line-height:'+(lh+FS)+'px;mso-line-height-rule:exactly;color:#8C8B8D;padding:0;white-space:nowrap;"><font face="Calibri, Arial, Helvetica, sans-serif" color="#8C8B8D">'+esc(d.titleFull)+'</font></td>';
+  return '<td style="font-family:Calibri, Arial, Helvetica, sans-serif;font-size:'+(11+FS)+'px;line-height:'+(lh+FS)+'px;mso-line-height-rule:exactly;color:#231F20;padding:0;white-space:nowrap;"><font face="Calibri, Arial, Helvetica, sans-serif" color="#231F20">'+esc(d.titleFull)+'</font></td>';
 }
 function head(d){
   return '<tr><td valign="middle" width="40" style="width:40px;padding:0;"><img src="'+BASE+'logo.png" width="40" height="40" alt="HealthRev Works" border="0" style="display:block;border:0;outline:none;width:40px;height:40px;"></td>' +
@@ -166,7 +177,7 @@ function head(d){
     '</table></td></tr>';
 }
 function wrap(total, inner){
-  return '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="'+total+'" style="border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;width:'+total+'px;background:transparent;font-family:Calibri, Arial, Helvetica, sans-serif;font-size:11px;color:#1D3766;">'+inner+'</table>';
+  return '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="'+total+'" style="border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;width:'+total+'px;background:transparent;font-family:Calibri, Arial, Helvetica, sans-serif;font-size:11px;color:#231F20;">'+inner+'</table>';
 }
 
 function build(v, d, lh){
@@ -211,9 +222,16 @@ VERSIONS.forEach(function(v){
     var c = document.createElement("div");
     c.className = "card"; c.id = "card" + v.id + "-" + t.key;
     c._v = v.id; c._h = t.h; c._nw = t.nw;
-    c.innerHTML = '<div class="head"><div><b>'+v.title+' \u00b7 '+t.label+'</b><span>'+v.note+'</span></div><button type="button">Copy signature</button></div><div class="sigwrap"><div class="sig"></div></div>';
+    c.innerHTML = '<div class="head"><div><b>'+v.title+' \u00b7 '+t.label+'</b><span>'+v.note+'</span></div><button type="button" class="copybtn">Copy signature</button></div><div class="weights"><span class="lbl">Name weight</span><span class="seg" role="group" aria-label="Name weight"></span></div><div class="sigwrap"><div class="sig"></div></div>';
     cards.appendChild(c);
-    c.querySelector("button").addEventListener("click", function(){ copyCard(c, this); });
+    c.querySelector(".copybtn").addEventListener("click", function(){ copyCard(c, this); });
+    var seg = c.querySelector(".seg");
+    WEIGHTS.forEach(function(w){
+      var b = document.createElement("button");
+      b.type = "button"; b.textContent = w.label; b.dataset.w = w.key;
+      b.addEventListener("click", function(){ c._nw = w.key; render(); });
+      seg.appendChild(b);
+    });
   });
 });
 
@@ -232,6 +250,7 @@ function render(){
     var html = build(c._v, d, c._h);
     c._html = html;
     c.querySelector(".sig").innerHTML = html;
+    c.querySelectorAll(".seg button").forEach(function(b){ b.classList.toggle("on", b.dataset.w === c._nw); });
   });
 }
 // auto-format phone fields; extension is digits only
@@ -285,7 +304,7 @@ function copyCard(card, btn){
     window._t = setTimeout(function(){
       toast.classList.remove("show");
       document.querySelectorAll(".sigwrap").forEach(function(c){ c.classList.remove("flash"); });
-      document.querySelectorAll(".card button").forEach(function(b){ b.textContent = "Copy signature"; b.classList.remove("done"); });
+      document.querySelectorAll(".card .copybtn").forEach(function(b){ b.textContent = "Copy signature"; b.classList.remove("done"); });
     }, 2500);
   });
 }
