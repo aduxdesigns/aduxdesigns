@@ -68,7 +68,7 @@
         <li>Click New, name it, then click in the editing box and paste (Ctrl+V). Save.</li>
       </ol>
     </div>
-    <h2>Versions: regular line, medium line and thin line</h2>
+    <h2>Versions: medium line, regular line and thin line</h2>
     <div id="cards"></div>
   </div>
 </div>
@@ -88,14 +88,15 @@ var VERSIONS = [
   { id:4, title:"Version 3", note:"Compact. Line sits at the base of the logo, title right above it." }
 ];
 var THICKNESS = [
-  { key:"regular", label:"Regular line", h:3 },
-  { key:"medium",  label:"Medium line",  h:2 },
-  { key:"thin",    label:"Thin line",    h:1 }
+  { key:"medium",  label:"Medium line",  h:3, nw:"bold" },
+  { key:"regular", label:"Regular line", h:2, nw:"semibold" },
+  { key:"thin",    label:"Thin line",    h:1, nw:"regular" }
 ];
 
 function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
 var ctx = document.createElement("canvas").getContext("2d");
-function textW(s, px, bold){ ctx.font = (bold ? "bold " : "") + px + "px Arial, Helvetica, sans-serif"; return Math.ceil(ctx.measureText(s).width) + 3; }
+var FS = 2; // signature font size bump in px
+function textW(s, px, bold){ ctx.font = (bold ? "bold " : "") + px + "px Calibri, Arial, Helvetica, sans-serif"; return Math.ceil(ctx.measureText(s).width) + 3; }
 
 /* ---- phone formatting ---- */
 function digitsOf(s){ return (s || "").replace(/\D/g, ""); }
@@ -115,14 +116,14 @@ function gap(h, span){
   var cs = span === 0 ? "" : ' colspan="'+(span||3)+'"';
   return '<tr><td'+cs+' height="'+h+'" style="height:'+h+'px;padding:0;font-size:'+h+'px;line-height:'+h+'px;mso-line-height-rule:exactly;">&nbsp;</td></tr>';
 }
-var TXT = 'padding:0;font-family:Arial, Helvetica, sans-serif;font-size:11px;line-height:16px;mso-line-height-rule:exactly;color:#1D3766;white-space:nowrap;';
-var LINK = 'style="color:#1D3766 !important;text-decoration:none !important;font-family:Arial, Helvetica, sans-serif;"';
+var TXT = 'padding:0;font-family:Calibri, Arial, Helvetica, sans-serif;font-size:'+(11+FS)+'px;line-height:'+(16+FS)+'px;mso-line-height-rule:exactly;color:#1D3766;white-space:nowrap;';
+var LINK = 'style="color:#1D3766 !important;text-decoration:none !important;font-family:Calibri, Arial, Helvetica, sans-serif;"';
 
 function items(d){
   var a = [];
   if (d.phoneText) a.push(["phone.png", '<a href="'+telHref(d.phone, d.ext)+'" '+LINK+'>'+esc(d.phoneText)+'</a>']);
   if (d.mobile) a.push(["mobile.png", '<a href="'+telHref(d.mobile)+'" '+LINK+'>'+esc(d.mobile)+'</a>']);
-  a.push(["web.png", '<a href="https://'+WEB+'" target="_blank" style="color:#1D3766 !important;text-decoration:underline !important;font-family:Arial, Helvetica, sans-serif;">'+WEB+'</a>']);
+  a.push(["web.png", '<a href="https://'+WEB+'" target="_blank" style="color:#1D3766 !important;text-decoration:underline !important;font-family:Calibri, Arial, Helvetica, sans-serif;">'+WEB+'</a>']);
   return a;
 }
 // aligned=false -> icon centred in 40px logo column; true -> icon sits in text column
@@ -143,28 +144,36 @@ function lineHtml(w){
     '<td valign="top" width="'+l+'" style="width:'+l+'px;padding:'+LINE_TOP[LH]+'px 0 0 0;font-size:0;line-height:0;"><img src="'+BASE+'divider-line-3x.png" width="'+l+'" height="'+attrH+'" alt="" border="0" style="display:block;border:0;outline:none;width:'+l+'px;height:'+LH+'px;"></td>' +
     '<td valign="middle" width="'+D+'" style="width:'+D+'px;padding:0;font-size:0;line-height:0;"><img src="'+BASE+'divider-dot-3x.png" width="'+D+'" height="'+D+'" alt="" border="0" style="display:block;border:0;outline:none;width:'+D+'px;height:'+D+'px;"></td></tr></table>';
 }
+var NAME_STYLES = {
+  bold:     { fam:"Calibri, Arial, Helvetica, sans-serif", face:"Calibri, Arial, Helvetica, sans-serif", w:"bold", tag:true },
+  semibold: { fam:"Calibri, Arial, Helvetica, sans-serif", face:"Calibri, Arial, Helvetica, sans-serif", w:"600", tag:false },
+  regular:  { fam:"Calibri, Arial, Helvetica, sans-serif", face:"Calibri, Arial, Helvetica, sans-serif", w:"normal", tag:false }
+};
+var NAME = NAME_STYLES.bold;
+function nameWidth(s){ ctx.font = NAME.w + " " + (12+FS) + "px " + NAME.fam; return Math.ceil(ctx.measureText(s).width) + 3; }
 function nameCell(d, lh){
-  return '<td style="font-family:Arial, Helvetica, sans-serif;font-size:12px;font-weight:bold;line-height:'+lh+'px;mso-line-height-rule:exactly;color:#1D3766;padding:0;white-space:nowrap;"><font face="Arial, Helvetica, sans-serif" color="#1D3766"><b>'+esc(d.name)+'</b></font></td>';
+  var t = esc(d.name); if (NAME.tag) t = '<b>'+t+'</b>';
+  return '<td style="font-family:'+NAME.fam+';font-size:'+(12+FS)+'px;font-weight:'+NAME.w+';line-height:'+(lh+FS)+'px;mso-line-height-rule:exactly;color:#1D3766;padding:0;white-space:nowrap;"><font face="'+NAME.face+'" color="#1D3766">'+t+'</font></td>';
 }
 function titleCell(d, lh){
-  return '<td style="font-family:Arial, Helvetica, sans-serif;font-size:11px;line-height:'+lh+'px;mso-line-height-rule:exactly;color:#8C8B8D;padding:0;white-space:nowrap;"><font face="Arial, Helvetica, sans-serif" color="#8C8B8D">'+esc(d.titleFull)+'</font></td>';
+  return '<td style="font-family:Calibri, Arial, Helvetica, sans-serif;font-size:'+(11+FS)+'px;line-height:'+(lh+FS)+'px;mso-line-height-rule:exactly;color:#8C8B8D;padding:0;white-space:nowrap;"><font face="Calibri, Arial, Helvetica, sans-serif" color="#8C8B8D">'+esc(d.titleFull)+'</font></td>';
 }
 function head(d){
   return '<tr><td valign="middle" width="40" style="width:40px;padding:0;"><img src="'+BASE+'logo.png" width="40" height="40" alt="HealthRev Works" border="0" style="display:block;border:0;outline:none;width:40px;height:40px;"></td>' +
     '<td width="10" style="width:10px;padding:0;font-size:0;line-height:0;">&nbsp;</td>' +
-    '<td valign="middle" style="padding:0 15px 0 0;font-family:Arial, Helvetica, sans-serif;white-space:nowrap;"><table role="presentation" cellpadding="0" cellspacing="0" border="0">' +
+    '<td valign="middle" style="padding:0 15px 0 0;font-family:Calibri, Arial, Helvetica, sans-serif;white-space:nowrap;"><table role="presentation" cellpadding="0" cellspacing="0" border="0">' +
     '<tr>'+nameCell(d,16)+'</tr>' + gap(3,1) + '<tr>'+titleCell(d,14)+'</tr>' +
     '</table></td></tr>';
 }
 function wrap(total, inner){
-  return '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="'+total+'" style="border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;width:'+total+'px;background:transparent;font-family:Arial, Helvetica, sans-serif;font-size:11px;color:#1D3766;">'+inner+'</table>';
+  return '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="'+total+'" style="border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;width:'+total+'px;background:transparent;font-family:Calibri, Arial, Helvetica, sans-serif;font-size:11px;color:#1D3766;">'+inner+'</table>';
 }
 
 function build(v, d, lh){
   LH = lh;
-  var nameW = textW(d.name,12,true), titleW = textW(d.titleFull,11);
+  var nameW = nameWidth(d.name), titleW = textW(d.titleFull,11+FS);
   var topW = 50 + Math.max(nameW, titleW) + 15;
-  var cw = Math.max(textW(d.phoneText,11), d.mobile ? textW(d.mobile,11) : 0, textW(WEB,11));
+  var cw = Math.max(textW(d.phoneText,11+FS), d.mobile ? textW(d.mobile,11+FS) : 0, textW(WEB,11+FS));
   var rows;
   if (v === 1) {
     var total = Math.max(topW, 50 + cw, 200);
@@ -188,9 +197,9 @@ function build(v, d, lh){
     '<tr>'+nameCell(d,15)+'</tr>' + gap(2,1) +
     '<tr>'+titleCell(d,13)+'</tr>' + gap(5,1) +
     '<tr><td style="padding:0;font-size:0;line-height:0;">'+lineHtml(lineW)+'</td></tr></table>';
-  rows = '<tr><td valign="top" width="40" style="width:40px;padding:0;"><img src="'+BASE+'logo.png" width="40" height="40" alt="HealthRev Works" border="0" style="display:block;border:0;outline:none;width:40px;height:40px;"></td>' +
+  rows = '<tr><td valign="bottom" width="40" style="width:40px;padding:0 0 '+(dotSize()/2-1)+'px 0;"><img src="'+BASE+'logo.png" width="40" height="40" alt="HealthRev Works" border="0" style="display:block;border:0;outline:none;width:40px;height:40px;"></td>' +
     '<td width="10" style="width:10px;padding:0;font-size:0;line-height:0;">&nbsp;</td>' +
-    '<td valign="bottom" height="'+(39+dotSize()/2)+'" style="height:'+(39+dotSize()/2)+'px;padding:0;">'+right+'</td></tr>' +
+    '<td valign="bottom" style="padding:0;">'+right+'</td></tr>' +
     gap(5) + '<tr><td colspan="3" style="padding:0;"><table role="presentation" cellpadding="0" cellspacing="0" border="0">'+rowsHtml(d,false,4)+'</table></td></tr>';
   return wrap(t4, rows);
 }
@@ -201,7 +210,7 @@ VERSIONS.forEach(function(v){
   THICKNESS.forEach(function(t){
     var c = document.createElement("div");
     c.className = "card"; c.id = "card" + v.id + "-" + t.key;
-    c._v = v.id; c._h = t.h;
+    c._v = v.id; c._h = t.h; c._nw = t.nw;
     c.innerHTML = '<div class="head"><div><b>'+v.title+' \u00b7 '+t.label+'</b><span>'+v.note+'</span></div><button type="button">Copy signature</button></div><div class="sigwrap"><div class="sig"></div></div>';
     cards.appendChild(c);
     c.querySelector("button").addEventListener("click", function(){ copyCard(c, this); });
@@ -219,6 +228,7 @@ function readData(){
 function render(){
   var d = current = readData();
   document.querySelectorAll(".card").forEach(function(c){
+    NAME = NAME_STYLES[c._nw];
     var html = build(c._v, d, c._h);
     c._html = html;
     c.querySelector(".sig").innerHTML = html;
