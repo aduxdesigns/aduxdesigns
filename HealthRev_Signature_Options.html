@@ -17,7 +17,14 @@
   input:focus { outline:2px solid var(--navy); outline-offset:1px; }
   .hint { font-size:11px; color:var(--grey); margin:-10px 0 16px; }
   .stage { flex:1; padding:28px 40px; min-width:0; }
-  .stage h2 { font-size:14px; margin:0 0 14px; }
+  .stage h2 { font-size:14px; margin:0; }
+  .bar { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; margin:0 0 14px; }
+  .ctrls { display:flex; flex-wrap:wrap; align-items:center; gap:8px; font-size:12px; }
+  .ctrls .lbl { color:var(--grey); margin-right:2px; }
+  .ctrls button { width:auto; background:transparent; color:#6B6869; border:0; border-radius:999px; padding:5px 12px; font-size:12px; font-weight:600; }
+  .ctrls button:hover { background:#E4E4E5; color:#231F20; }
+  .ctrls button.on, .ctrls button.on:hover { background:#fff; color:#231F20; box-shadow:0 1px 2px rgba(35,31,32,.15), 0 0 0 1px #DCDCDD; }
+  .ctrls .seg { display:inline-flex; background:#F1F1F2; border:1px solid #DCDCDD; border-radius:999px; padding:2px; gap:2px; }
   .howto { background:#fff; border:1px solid var(--line); border-radius:8px; padding:14px 20px; margin:0 0 20px; font-size:13px; line-height:1.55; }
   .howto b { display:block; margin-bottom:4px; }
   .howto ol { margin:0; padding-left:18px; }
@@ -29,10 +36,10 @@
   .head { display:flex; justify-content:space-between; align-items:center; gap:12px; background:#F7F7F7; border-bottom:1px solid var(--line); padding:14px 20px; }
   .head b { font-size:14px; display:block; }
   .head span { font-size:12px; color:var(--grey); display:block; margin-top:3px; }
-  .weights { display:flex; align-items:center; gap:8px; padding:10px 20px; border-bottom:1px solid var(--line); font-size:12px; }
+  .weights { display:flex; flex-wrap:wrap; align-items:center; gap:8px; padding:10px 20px; border-bottom:1px solid var(--line); font-size:12px; }
   .weights .lbl { color:var(--grey); margin-right:2px; }
   .weights .seg { display:inline-flex; background:#F1F1F2; border:1px solid #DCDCDD; border-radius:999px; padding:2px; gap:2px; }
-  .weights button { width:auto; background:transparent; color:#6B6869; border:0; border-radius:999px; padding:5px 14px; font-size:12px; font-weight:600; }
+  .weights button { width:auto; background:transparent; color:#6B6869; border:0; border-radius:999px; padding:5px 10px; font-size:12px; font-weight:600; }
   .weights button:hover { background:#E4E4E5; color:#231F20; }
   .weights button.on, .weights button.on:hover { background:#fff; color:#231F20; box-shadow:0 1px 2px rgba(35,31,32,.15), 0 0 0 1px #DCDCDD; }
   .sigwrap { overflow-x:auto; padding:24px 24px 28px; }
@@ -74,7 +81,13 @@
         <li>Click New, name it, then click in the editing box and paste (Ctrl+V). Save.</li>
       </ol>
     </div>
-    <h2>Versions: medium line, regular line and thin line</h2>
+    <div class="bar"><h2>Versions: medium line, regular line and thin line</h2>
+      <div class="ctrls">
+        <span class="lbl">Name weight</span><span class="seg" id="wseg" role="group" aria-label="Name weight"></span>
+        <span class="lbl" style="margin-left:14px;">Font size</span><span class="seg" id="sseg" role="group" aria-label="Font size"></span>
+        <span class="lbl" style="margin-left:14px;">Line thickness</span><span class="seg" id="lseg" role="group" aria-label="Line thickness"></span>
+      </div>
+    </div>
     <div id="cards"></div>
   </div>
 </div>
@@ -122,14 +135,16 @@ function gap(h, span){
   var cs = span === 0 ? "" : ' colspan="'+(span||3)+'"';
   return '<tr><td'+cs+' height="'+h+'" style="height:'+h+'px;padding:0;font-size:'+h+'px;line-height:'+h+'px;mso-line-height-rule:exactly;">&nbsp;</td></tr>';
 }
-var TXT = 'padding:0;font-family:Calibri, Arial, Helvetica, sans-serif;font-size:'+(11+FS)+'px;line-height:'+(16+FS)+'px;mso-line-height-rule:exactly;color:#231F20;white-space:nowrap;';
-var LINK = 'style="color:#231F20 !important;text-decoration:none !important;font-family:Calibri, Arial, Helvetica, sans-serif;"';
+var TXT = "";
+function setFS(n){ FS = n; TXT = 'padding:0;font-family:Calibri, Arial, Helvetica, sans-serif;font-size:'+(11+FS)+'px;line-height:'+(16+FS)+'px;mso-line-height-rule:exactly;color:#1D3766;white-space:nowrap;'; }
+setFS(2);
+var LINK = 'style="color:#1D3766 !important;text-decoration:none !important;font-family:Calibri, Arial, Helvetica, sans-serif;"';
 
 function items(d){
   var a = [];
   if (d.phoneText) a.push(["phone.png", '<a href="'+telHref(d.phone, d.ext)+'" '+LINK+'>'+esc(d.phoneText)+'</a>']);
   if (d.mobile) a.push(["mobile.png", '<a href="'+telHref(d.mobile)+'" '+LINK+'>'+esc(d.mobile)+'</a>']);
-  a.push(["web.png", '<a href="https://'+WEB+'" target="_blank" style="color:#231F20 !important;text-decoration:underline !important;font-family:Calibri, Arial, Helvetica, sans-serif;">'+WEB+'</a>']);
+  a.push(["web.png", '<a href="https://'+WEB+'" target="_blank" style="color:#1D3766 !important;text-decoration:underline !important;font-family:Calibri, Arial, Helvetica, sans-serif;">'+WEB+'</a>']);
   return a;
 }
 // aligned=false -> icon centred in 40px logo column; true -> icon sits in text column
@@ -160,14 +175,20 @@ var WEIGHTS = [
   { key:"medium",  label:"Medium" },
   { key:"bold",    label:"Bold" }
 ];
+var SIZES = [
+  { key:2, label:"Default" },
+  { key:3, label:"+1" },
+  { key:4, label:"+2" },
+  { key:5, label:"+3" }
+];
 var NAME = NAME_STYLES.bold;
 function nameWidth(s){ ctx.font = NAME.w + " " + (12+FS) + "px " + NAME.fam; return Math.ceil(ctx.measureText(s).width) + 3; }
 function nameCell(d, lh){
   var t = esc(d.name); if (NAME.tag) t = '<b>'+t+'</b>';
-  return '<td style="font-family:'+NAME.fam+';font-size:'+(12+FS)+'px;font-weight:'+NAME.w+';line-height:'+(lh+FS)+'px;mso-line-height-rule:exactly;color:#231F20;padding:0;white-space:nowrap;"><font face="'+NAME.face+'" color="#231F20">'+t+'</font></td>';
+  return '<td style="font-family:'+NAME.fam+';font-size:'+(12+FS)+'px;font-weight:'+NAME.w+';line-height:'+(lh+FS)+'px;mso-line-height-rule:exactly;color:#1D3766;padding:0;white-space:nowrap;"><font face="'+NAME.face+'" color="#1D3766">'+t+'</font></td>';
 }
 function titleCell(d, lh){
-  return '<td style="font-family:Calibri, Arial, Helvetica, sans-serif;font-size:'+(11+FS)+'px;line-height:'+(lh+FS)+'px;mso-line-height-rule:exactly;color:#231F20;padding:0;white-space:nowrap;"><font face="Calibri, Arial, Helvetica, sans-serif" color="#231F20">'+esc(d.titleFull)+'</font></td>';
+  return '<td style="font-family:Calibri, Arial, Helvetica, sans-serif;font-size:'+(11+FS)+'px;line-height:'+(lh+FS)+'px;mso-line-height-rule:exactly;color:#8C8B8D;padding:0;white-space:nowrap;"><font face="Calibri, Arial, Helvetica, sans-serif" color="#8C8B8D">'+esc(d.titleFull)+'</font></td>';
 }
 function head(d){
   return '<tr><td valign="middle" width="40" style="width:40px;padding:0;"><img src="'+BASE+'logo.png" width="40" height="40" alt="HealthRev Works" border="0" style="display:block;border:0;outline:none;width:40px;height:40px;"></td>' +
@@ -221,20 +242,35 @@ VERSIONS.forEach(function(v){
   THICKNESS.forEach(function(t){
     var c = document.createElement("div");
     c.className = "card"; c.id = "card" + v.id + "-" + t.key;
-    c._v = v.id; c._h = t.h; c._nw = t.nw;
-    c.innerHTML = '<div class="head"><div><b>'+v.title+' \u00b7 '+t.label+'</b><span>'+v.note+'</span></div><button type="button" class="copybtn">Copy signature</button></div><div class="weights"><span class="lbl">Name weight</span><span class="seg" role="group" aria-label="Name weight"></span></div><div class="sigwrap"><div class="sig"></div></div>';
+    c._v = v.id; c._h = t.h; c._nw = t.nw; c._vt = v.title; c._tl = t.label;
+    c.innerHTML = '<div class="head"><div><b>'+v.title+' \u00b7 '+t.label+'</b><span>'+v.note+'</span></div><button type="button" class="copybtn">Copy signature</button></div><div class="sigwrap"><div class="sig"></div></div>';
     cards.appendChild(c);
     c.querySelector(".copybtn").addEventListener("click", function(){ copyCard(c, this); });
-    var seg = c.querySelector(".seg");
-    WEIGHTS.forEach(function(w){
-      var b = document.createElement("button");
-      b.type = "button"; b.textContent = w.label; b.dataset.w = w.key;
-      b.addEventListener("click", function(){ c._nw = w.key; render(); });
-      seg.appendChild(b);
-    });
   });
 });
 
+var gNW = "auto", gFS = 2, gLH = "auto";
+var LOPTS = [{key:"auto",label:"Auto"},{key:"1",label:"Thin"},{key:"2",label:"Regular"},{key:"3",label:"Medium"}];
+var LLABEL = {1:"Thin line",2:"Regular line",3:"Medium line"};
+LOPTS.forEach(function(l){
+  var b = document.createElement("button");
+  b.type = "button"; b.textContent = l.label; b.dataset.l = l.key;
+  b.addEventListener("click", function(){ gLH = l.key; render(); });
+  document.getElementById("lseg").appendChild(b);
+});
+var WOPTS = [{key:"auto",label:"Auto"}].concat(WEIGHTS);
+WOPTS.forEach(function(w){
+  var b = document.createElement("button");
+  b.type = "button"; b.textContent = w.label; b.dataset.w = w.key;
+  b.addEventListener("click", function(){ gNW = w.key; render(); });
+  document.getElementById("wseg").appendChild(b);
+});
+SIZES.forEach(function(z){
+  var b = document.createElement("button");
+  b.type = "button"; b.textContent = z.label; b.dataset.s = z.key;
+  b.addEventListener("click", function(){ gFS = z.key; render(); });
+  document.getElementById("sseg").appendChild(b);
+});
 var current = {};
 function readData(){
   var d = {};
@@ -244,13 +280,18 @@ function readData(){
   return d;
 }
 function render(){
+  document.querySelectorAll("#wseg button").forEach(function(b){ b.classList.toggle("on", b.dataset.w === gNW); });
+  document.querySelectorAll("#sseg button").forEach(function(b){ b.classList.toggle("on", +b.dataset.s === gFS); });
+  document.querySelectorAll("#lseg button").forEach(function(b){ b.classList.toggle("on", b.dataset.l === String(gLH)); });
   var d = current = readData();
   document.querySelectorAll(".card").forEach(function(c){
-    NAME = NAME_STYLES[c._nw];
-    var html = build(c._v, d, c._h);
+    var h = gLH === "auto" ? c._h : +gLH;
+    c.querySelector(".head b").textContent = c._vt + " \u00b7 " + (gLH === "auto" ? c._tl : LLABEL[h]);
+    NAME = NAME_STYLES[gNW === "auto" ? c._nw : gNW];
+    setFS(gFS);
+    var html = build(c._v, d, h);
     c._html = html;
     c.querySelector(".sig").innerHTML = html;
-    c.querySelectorAll(".seg button").forEach(function(b){ b.classList.toggle("on", b.dataset.w === c._nw); });
   });
 }
 // auto-format phone fields; extension is digits only
